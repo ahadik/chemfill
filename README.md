@@ -4,6 +4,14 @@
 
 This Sketch Data Plugin fetches a random molecule from the ChEMBL (https://www.ebi.ac.uk/chembl/) API and returns a rendering of its structure as PNG image. This can be incredibly useful for designing software for the life sciences where chemical structures might be a common form of data rendered.
 
+## Installation
+
+_Requires Sketch >= 3_
+
+* [Download](https://github.com/ahadik/chemofill/releases/latest) the latest release
+* Un-zip
+* Double click the plugin file to install.
+
 ## Features and Usage
 
 Once you have installed the ChemoFill plugin, you can access it from the Sketch Data menu.
@@ -25,14 +33,6 @@ Step 3: Select the Random Structure action
 Step 4: Enjoy your chemical mastery
 
 ![Step 4: Enjoy your chemical mastery](https://github.com/ahadik/chemofill/blob/master/docs/step-4.png)
-
-## Installation
-
-_Requires Sketch >= 3_
-
-* [Download](https://github.com/ahadik/chemofill/releases/latest) the latest release
-* Un-zip
-* Double click the plugin file to install.
 
 ## Developing
 
