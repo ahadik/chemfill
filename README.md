@@ -16,11 +16,11 @@ Step 1: Select and right click on the shape you would like to insert a Chemical 
 
 Step 2: Select Data from the context menu
 
-![Step 2: Select Data from the context menu](https://github.com/ahadik/chemofill/blob/master/docs/step-2.png | width=200)
+<img src="https://github.com/ahadik/chemofill/blob/master/docs/step-2.png" width="200">
 
 Step 3: Select the Random Structure action
 
-![Step 3: Select the Random Structure action](https://github.com/ahadik/chemofill/blob/master/docs/step-3.png | width=200)
+<img src="https://github.com/ahadik/chemofill/blob/master/docs/step-3.png" width="200">
 
 Step 4: Enjoy your chemical mastery
 
