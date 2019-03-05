@@ -1,4 +1,4 @@
-![ChemoFill](https://github.com/ahadik/chemofill/blob/master/docs/banner.png)
+![ChemoFill](https://github.com/ahadik/chemofill/blob/master/docs/banner-light.png)
 
 # ChemoFill
 
