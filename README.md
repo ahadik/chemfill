@@ -30,7 +30,7 @@ Step 4: Enjoy your chemical mastery
 
 _Requires Sketch >= 3_
 
-* [Download](https://github.com/mathieudutour/sketch-styles-hierarchy/releases/latest) the latest release
+* [Download](https://github.com/ahadik/chemofill/releases/latest) the latest release
 * Un-zip
 * Double click the plugin file to install.
 
