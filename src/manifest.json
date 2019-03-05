@@ -1,0 +1,22 @@
+{
+  "name": "ChemoFill",
+  "compatibleVersion": 3,
+  "bundleVersion": 1,
+  "icon": "icon-dark.png",
+  "suppliesData": true,
+  "commands": [
+    {
+      "script": "chemofill.js",
+      "handlers": {
+        "actions": {
+          "Startup": "onStartup",
+          "Shutdown": "onShutdown",
+          "SupplyRandomStructure": "onSupplyRandomStructure"
+        }
+      }
+    }
+  ],
+  "menu": {
+    "title": "ChemoFill"
+  }
+}

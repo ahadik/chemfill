@@ -1,0 +1,37 @@
+{
+  "name": "chemofill",
+  "version": "0.1.0",
+  "description": "A Chemical Structure data supplier plugin.",
+  "engines": {
+    "sketch": ">=3.0"
+  },
+  "skpm": {
+    "name": "chemofill",
+    "manifest": "src/manifest.json",
+    "main": "chemofill.sketchplugin",
+    "assets": [
+      "assets/**/*"
+    ]
+  },
+  "scripts": {
+    "build": "skpm-build",
+    "watch": "skpm-build --watch",
+    "start": "skpm-build --watch --run",
+    "postinstall": "yarn build && skpm-link"
+  },
+  "devDependencies": {
+    "@skpm/builder": "^0.5.2",
+    "eslint": "^5.13.0",
+    "eslint-config-airbnb": "^15.1.0",
+    "eslint-plugin-jsx-a11y": "^5.1.1",
+    "eslint-plugin-react": "^7.2.0",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-node": "^7.0.1",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0"
+  },
+  "author": "Alexander Hadik <alex@alexhadik.com>",
+  "dependencies": {
+    "@skpm/fs": "^0.2.4"
+  }
+}
