@@ -33,5 +33,9 @@
   "author": "Alexander Hadik <alex@alexhadik.com>",
   "dependencies": {
     "@skpm/fs": "^0.2.4"
+  },
+  "repository" : {
+    "type": "git",
+    "url": "git+https://github.com/ahadik/chemofill.git"
   }
 }
