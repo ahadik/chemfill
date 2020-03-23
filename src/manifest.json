@@ -1,12 +1,18 @@
 {
-  "name": "ChemoFill",
+  "name": "ChemFill",
+  "identifier": "chemfill",
+  "version": "1.0.0",
   "compatibleVersion": 3,
   "bundleVersion": 1,
-  "icon": "icon-dark.png",
   "suppliesData": true,
+  "description": "A Chemical Structure data supplier plugin.",
+  "author": "Alexander Hadik",
+  "authorEmail": "alex@alexhadik.com",
+  "icon": "icon-dark.png",
+  "appcast": "https://raw.githubusercontent.com/ahadik/chemofill/master/.appcast.xml",
   "commands": [
     {
-      "script": "chemofill.js",
+      "script": "chemfill.js",
       "handlers": {
         "actions": {
           "Startup": "onStartup",
@@ -17,6 +23,6 @@
     }
   ],
   "menu": {
-    "title": "ChemoFill"
+    "title": "ChemFill"
   }
 }
