@@ -1,4 +1,8 @@
+import SVGToPng from './utils';
+
 const sketch = require('sketch');
+const document = require('sketch/dom').getSelectedDocument();
+const UI = require('sketch/ui');
 const util = require('util');
 const fs = require('@skpm/fs');
 const path = require('path');
@@ -8,13 +12,23 @@ const { DataSupplier } = sketch;
 
 const RESOURCE_PATH = '../Resources/';
 
+const wittyIntroMessages = [
+  'Grabbing you a compound...',
+  'Watch out Walter White!',
+  'Hitting up the supply cabinet...',
+  'Welcome to Chemistry 101!',
+  'Let\'s get chemical!'
+]
+
 const idsFileRaw = fs.readFileSync(path.resolve(path.join(RESOURCE_PATH, 'chembl-ids.json')));
 // Extract the IDs from the seed JSON file.
 const { ids } = JSON.parse(idsFileRaw);
 
 const FOLDER = path.join(os.tmpdir(), 'com.sketchapp.chemofill-plugin');
+let test;
 
-export function onStartup() {
+export function onStartup(a) {
+  test = a;
   // To register the plugin, uncomment the relevant type:
   // DataSupplier.registerDataSupplier('public.text', 'chemofill', 'SupplyData')
   DataSupplier.registerDataSupplier('public.image', 'Random Structure', 'SupplyRandomStructure');
@@ -33,50 +47,31 @@ export function onShutdown() {
   }
 }
 
-function saveImageData(imageBlob) {
-  const guid = NSProcessInfo.processInfo().globallyUniqueString();
-  const imagePath = path.join(FOLDER, `${guid}.png`);
 
-  try {
-    fs.mkdirSync(FOLDER);
-  } catch (err) {
-    // meh
-  }
-
-  try {
-    fs.writeFileSync(imagePath, imageBlob, 'NSData');
-    return imagePath;
-  } catch (err) {
-    console.error(err);
-  }
-
-  return undefined;
-}
-
-function getStructureImageFromURL(url) {
-  return fetch(url)
-    .then(res => res.blob())
-    .then(saveImageData)
-    .catch((err) => {
-      console.error(err);
-      return path.resolve(path.join(RESOURCE_PATH, 'default-structure.png'));
-    });
-}
 
 export function onSupplyRandomStructure(context) {
+  UI.message(wittyIntroMessages[Math.floor(Math.random() * wittyIntroMessages.length)]);
   const dataKey = context.data.key;
   const items = util.toArray(context.data.items).map(sketch.fromNative);
+  const Converter = new SVGToPng(document, RESOURCE_PATH, FOLDER);
+  let supplierStackCount = 0;
+  let supplierStack = [];
   items.forEach((item, index) => {
     const randomID = ids[Math.floor(Math.random() * ids.length)];
-    const structureURL = `https://www.ebi.ac.uk/chembl/api/data/image/${randomID}`;
+    supplierStack.push(randomID);
+    supplierStackCount++;
+    const structureURL = `https://www.ebi.ac.uk/chembl/api/data/image/${randomID}?format=svg`;
 
-    getStructureImageFromURL(structureURL).then((imagePath) => {
-      if (!imagePath) {
+    Converter.saveStructureAsPng(structureURL).then((pngPath) => {
+      if (!pngPath) {
         console.error('I dunno... There\'s no image path even though we got this far...');
         return;
       }
-
-      DataSupplier.supplyDataAtIndex(dataKey, imagePath, index);
+      DataSupplier.supplyDataAtIndex(dataKey, pngPath, index);
+      supplierStack.pop();
+      if (supplierStack.length === 0) {
+        UI.message(`Synthesized ${supplierStackCount} ${supplierStackCount === 1 ? 'compound' : 'compounds'} for you!`)
+      }
     });
-  });
+  })
 }
