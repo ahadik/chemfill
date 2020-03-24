@@ -9,7 +9,7 @@
   "author": "Alexander Hadik",
   "authorEmail": "alex@alexhadik.com",
   "icon": "icon-dark.png",
-  "appcast": "https://raw.githubusercontent.com/ahadik/chemofill/master/.appcast.xml",
+  "appcast": "https://raw.githubusercontent.com/ahadik/chemfill/master/.appcast.xml",
   "commands": [
     {
       "script": "chemfill.js",
