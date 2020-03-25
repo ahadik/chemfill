@@ -1,7 +1,7 @@
 {
   "name": "ChemFill",
   "identifier": "chemfill",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "compatibleVersion": 3,
   "bundleVersion": 1,
   "suppliesData": true,
@@ -17,7 +17,10 @@
         "actions": {
           "Startup": "onStartup",
           "Shutdown": "onShutdown",
-          "SupplyRandomStructure": "onSupplyRandomStructure"
+          "SupplyRandomStructure": "onSupplyRandomStructure",
+          "SupplyRandomSMILES": "onSupplyRandomSMILES",
+          "SupplyRandomFormula": "onSupplyRandomFormula",
+          "SupplyRandomWeight": "onSupplyRandomWeight"
         }
       }
     }

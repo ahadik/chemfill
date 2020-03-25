@@ -1,9 +1,10 @@
-import SVGToPng from './utils';
+import SVGToPng from './SVGtoPNG';
+import Supplier from './Supplier';
+import APIFetcher from './APIFetcher';
 
 const sketch = require('sketch');
 const document = require('sketch/dom').getSelectedDocument();
 const UI = require('sketch/ui');
-const util = require('util');
 const fs = require('@skpm/fs');
 const path = require('path');
 const os = require('os');
@@ -17,21 +18,19 @@ const wittyIntroMessages = [
   'Watch out Walter White!',
   'Hitting up the supply cabinet...',
   'Welcome to Chemistry 101!',
-  'Let\'s get chemical!'
-]
-
-const idsFileRaw = fs.readFileSync(path.resolve(path.join(RESOURCE_PATH, 'chembl-ids.json')));
-// Extract the IDs from the seed JSON file.
-const { ids } = JSON.parse(idsFileRaw);
+  'Let\'s get chemical!',
+  'You can’t trust an atom, they make up everything. Fetching you a molecule instead.',
+  'Let\'s put the "cool" back in molecule!'
+];
 
 const FOLDER = path.join(os.tmpdir(), 'com.sketchapp.chemofill-plugin');
-let test;
 
 export function onStartup(a) {
-  test = a;
   // To register the plugin, uncomment the relevant type:
-  // DataSupplier.registerDataSupplier('public.text', 'chemofill', 'SupplyData')
-  DataSupplier.registerDataSupplier('public.image', 'Random Structure', 'SupplyRandomStructure');
+  DataSupplier.registerDataSupplier('public.text', 'SMILES String', 'SupplyRandomSMILES');
+  DataSupplier.registerDataSupplier('public.text', 'Molecular Formula', 'SupplyRandomFormula');
+  DataSupplier.registerDataSupplier('public.text', 'Molecular Weight', 'SupplyRandomWeight');
+  DataSupplier.registerDataSupplier('public.image', 'Molecular Structure', 'SupplyRandomStructure');
 }
 
 export function onShutdown() {
@@ -47,31 +46,63 @@ export function onShutdown() {
   }
 }
 
+function showWaitingMessage() {
+  UI.message(wittyIntroMessages[Math.floor(Math.random() * wittyIntroMessages.length)]);
+}
 
+export function onSupplyRandomSMILES(context) {
+  showWaitingMessage();
+
+  const supplier = new Supplier(context, RESOURCE_PATH);
+
+  supplier.supply((chemblID) => {
+    const structureURL = `https://www.ebi.ac.uk/chembl/api/data/molecule/${chemblID}?format=json`;
+    return APIFetcher(structureURL, 'json').then((jsonBlob) => {
+      return jsonBlob.molecule_structures.canonical_smiles;
+    });
+  });
+}
+
+export function onSupplyRandomFormula(context) {
+  showWaitingMessage();
+
+  const supplier = new Supplier(context, RESOURCE_PATH);
+
+  supplier.supply((chemblID) => {
+    const structureURL = `https://www.ebi.ac.uk/chembl/api/data/molecule/${chemblID}?format=json`;
+    return APIFetcher(structureURL, 'json').then((jsonBlob) => {
+      return jsonBlob.molecule_properties.full_molformula;
+    });
+  });
+}
+
+export function onSupplyRandomWeight(context) {
+  showWaitingMessage();
+
+  const supplier = new Supplier(context, RESOURCE_PATH);
+
+  supplier.supply((chemblID) => {
+    const structureURL = `https://www.ebi.ac.uk/chembl/api/data/molecule/${chemblID}?format=json`;
+    return APIFetcher(structureURL, 'json').then((jsonBlob) => {
+      return jsonBlob.molecule_properties.full_mwt;
+    });
+  });
+}
 
 export function onSupplyRandomStructure(context) {
-  UI.message(wittyIntroMessages[Math.floor(Math.random() * wittyIntroMessages.length)]);
-  const dataKey = context.data.key;
-  const items = util.toArray(context.data.items).map(sketch.fromNative);
-  const Converter = new SVGToPng(document, RESOURCE_PATH, FOLDER);
-  let supplierStackCount = 0;
-  let supplierStack = [];
-  items.forEach((item, index) => {
-    const randomID = ids[Math.floor(Math.random() * ids.length)];
-    supplierStack.push(randomID);
-    supplierStackCount++;
-    const structureURL = `https://www.ebi.ac.uk/chembl/api/data/image/${randomID}?format=svg`;
+  showWaitingMessage();
 
-    Converter.saveStructureAsPng(structureURL).then((pngPath) => {
+  const supplier = new Supplier(context, RESOURCE_PATH);
+  const svgToPng = new SVGToPng(document, RESOURCE_PATH, FOLDER);
+
+  supplier.supply((chemblID) => {
+    const structureURL = `https://www.ebi.ac.uk/chembl/api/data/image/${chemblID}?format=svg`;
+    return svgToPng.saveStructureAsPng(structureURL).then((pngPath) => {
       if (!pngPath) {
         console.error('I dunno... There\'s no image path even though we got this far...');
         return;
       }
-      DataSupplier.supplyDataAtIndex(dataKey, pngPath, index);
-      supplierStack.pop();
-      if (supplierStack.length === 0) {
-        UI.message(`Synthesized ${supplierStackCount} ${supplierStackCount === 1 ? 'compound' : 'compounds'} for you!`)
-      }
+      return pngPath;
     });
-  })
+  });
 }
