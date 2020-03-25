@@ -38,7 +38,7 @@ class Supplier {
         }
       })
       .catch((errorObj) => {
-        Supplier.supplyData(this.dataKey, errorObj.path, index);
+        Supplier.supplyData(this.dataKey, errorObj.data, index);
         this.supplierStack.pop();
         if (this.supplierStack.length === 0) {
           console.error(errorObj.error);
