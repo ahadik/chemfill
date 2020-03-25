@@ -41,9 +41,11 @@ Another common set of use cases is generating and inserting chemical data as tex
 Step 1: Select and right click on the text box, or collection of text boxes, you would like to fill.
 
 Step 2: Select the type of data you would like to generate from the ChemFill Data menu.
+
 ![Step 2: Select the type of data you would like to generate from the ChemFill Data menu.](https://github.com/ahadik/chemfill/blob/master/docs/step-2b.png)
 
 Step 3: Congratulate yourself for getting this far without a Chemistry PhD.
+
 <img src="https://github.com/ahadik/chemfill/blob/master/docs/step-3b.png" width="400">
 
 ## Developing
