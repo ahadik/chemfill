@@ -1,6 +1,7 @@
 import path from'path';
 import sketch from 'sketch/dom';
-import { rejects } from 'assert';
+
+import APIFetcher from './APIFetcher';
 
 class SVGToPNG {
   constructor(document, resource_path, temp_dir) {
@@ -15,19 +16,15 @@ class SVGToPNG {
 
   saveStructureAsPng(url) {
     return new Promise((res, rej) => {
-      fetch(url)
-      .then((res) => {
-        return res.text()._value;
-      })
-      .then(this.insertSVG)
-      .then(this.saveSVGLayer)
-      .then((pngString) => {
-        res(pngString);
-      })
-      .catch((err) => {
-        console.error(err);
-        res(path.resolve(path.join(this.resource_path, 'default-structure.png')));
-      });
+      APIFetcher(url, 'text')
+        .then(this.insertSVG)
+        .then(this.saveSVGLayer)
+        .then((pngString) => {
+          res(pngString);
+        })
+        .catch((err) => {
+          rej({path: path.resolve(path.join(this.resource_path, 'default-structure.png')), error: `${err} Returning a default structure instead.` });
+        });
     })
   }
 
