@@ -57,8 +57,16 @@ export function onSupplyRandomSMILES(context) {
 
   supplier.supply((chemblID) => {
     const structureURL = `https://www.ebi.ac.uk/chembl/api/data/molecule/${chemblID}?format=json`;
-    return APIFetcher(structureURL, 'json').then((jsonBlob) => {
-      return jsonBlob.molecule_structures.canonical_smiles;
+    return new Promise((res, rej) => {
+      APIFetcher(structureURL, 'json').then((jsonBlob) => {
+        res(jsonBlob.molecule_structures.canonical_smiles);
+      })
+      .catch((err) => {
+        rej({
+          data: 'CC[C@H](C)[C@H]1NC(=O)[C@H](CCCN=C(N)N)NC(=O)[C@H]2CCCN2C(=O)[C@H](CC(N)=O)NC(=O)[C@@H](CC(=O)O)NC(=O)[C@H](NC(=O)[C@H](CC(C)C)NC(=O)[C@H](C)NCc2cccc3ccccc23)CSSC[C@H](C(=O)N[C@@H](CCC(N)=O)C(=O)N[C@@H](Cc2ccccc2)C(=O)N[C@H](C(=O)N[C@@H](CCC(=O)O)C(=O)NCC(N)=O)C(C)C)NC(=O)[C@@H](Cc2ccc(O)cc2)NC(=O)[C@H](Cc2c[nH]c3ccccc23)NC(=O)[C@@H](CCCN=C(N)N)NC(=O)[C@H](CC(=O)O)NC1=O',
+          error: `${err} Returning a default structure instead.`
+        });
+      });
     });
   });
 }
@@ -70,8 +78,13 @@ export function onSupplyRandomFormula(context) {
 
   supplier.supply((chemblID) => {
     const structureURL = `https://www.ebi.ac.uk/chembl/api/data/molecule/${chemblID}?format=json`;
-    return APIFetcher(structureURL, 'json').then((jsonBlob) => {
-      return jsonBlob.molecule_properties.full_molformula;
+    return new Promise((res, rej) => {
+      APIFetcher(structureURL, 'json').then((jsonBlob) => {
+        res(jsonBlob.molecule_properties.full_molformula);
+      })
+      .catch((err) => {
+        rej({data: 'C36H59N7O7', error: `${err} Returning a default structure instead.` });
+      });
     });
   });
 }
@@ -83,8 +96,13 @@ export function onSupplyRandomWeight(context) {
 
   supplier.supply((chemblID) => {
     const structureURL = `https://www.ebi.ac.uk/chembl/api/data/molecule/${chemblID}?format=json`;
-    return APIFetcher(structureURL, 'json').then((jsonBlob) => {
-      return jsonBlob.molecule_properties.full_mwt;
+    return new Promise((res, rej) => {
+      APIFetcher(structureURL, 'json').then((jsonBlob) => {
+        res(jsonBlob.molecule_properties.full_mwt);
+      })
+      .catch((err) => {
+        rej({data: '768.90', error: `${err} Returning a default structure instead.` });
+      });
     });
   });
 }

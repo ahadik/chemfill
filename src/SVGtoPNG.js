@@ -23,7 +23,7 @@ class SVGToPNG {
           res(pngString);
         })
         .catch((err) => {
-          rej({path: path.resolve(path.join(this.resource_path, 'default-structure.png')), error: `${err} Returning a default structure instead.` });
+          rej({data: path.resolve(path.join(this.resource_path, 'default-structure.png')), error: `${err} Returning a default structure instead.` });
         });
     })
   }
