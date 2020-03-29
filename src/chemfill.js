@@ -2,14 +2,12 @@ import SVGToPng from './SVGtoPNG';
 import Supplier from './Supplier';
 import APIFetcher from './APIFetcher';
 
-const sketch = require('sketch');
+const { DataSupplier } = require('sketch');
 const document = require('sketch/dom').getSelectedDocument();
 const UI = require('sketch/ui');
 const fs = require('@skpm/fs');
 const path = require('path');
 const os = require('os');
-
-const { DataSupplier } = sketch;
 
 const RESOURCE_PATH = '../Resources/';
 
@@ -23,10 +21,14 @@ const wittyIntroMessages = [
   'Let\'s put the "cool" back in molecule!'
 ];
 
-const FOLDER = path.join(os.tmpdir(), 'com.sketchapp.chemofill-plugin');
+const FOLDER = path.join(os.tmpdir(), 'com.sketchapp.chemfill-plugin');
 
-export function onStartup(a) {
-  // To register the plugin, uncomment the relevant type:
+// Extract the IDs from the seed JSON file.
+const idsFileRaw = fs.readFileSync(path.resolve(path.join(RESOURCE_PATH, 'chembl-ids.json')));
+const { ids } = JSON.parse(idsFileRaw);
+
+export function onStartup() {
+  // Define four data suppliers
   DataSupplier.registerDataSupplier('public.text', 'SMILES String', 'SupplyRandomSMILES');
   DataSupplier.registerDataSupplier('public.text', 'Molecular Formula', 'SupplyRandomFormula');
   DataSupplier.registerDataSupplier('public.text', 'Molecular Weight', 'SupplyRandomWeight');
@@ -53,7 +55,7 @@ function showWaitingMessage() {
 export function onSupplyRandomSMILES(context) {
   showWaitingMessage();
 
-  const supplier = new Supplier(context, RESOURCE_PATH);
+  const supplier = new Supplier(context, ids);
 
   supplier.supply((chemblID) => {
     const structureURL = `https://www.ebi.ac.uk/chembl/api/data/molecule/${chemblID}?format=json`;
@@ -74,7 +76,7 @@ export function onSupplyRandomSMILES(context) {
 export function onSupplyRandomFormula(context) {
   showWaitingMessage();
 
-  const supplier = new Supplier(context, RESOURCE_PATH);
+  const supplier = new Supplier(context, ids);
 
   supplier.supply((chemblID) => {
     const structureURL = `https://www.ebi.ac.uk/chembl/api/data/molecule/${chemblID}?format=json`;
@@ -92,7 +94,7 @@ export function onSupplyRandomFormula(context) {
 export function onSupplyRandomWeight(context) {
   showWaitingMessage();
 
-  const supplier = new Supplier(context, RESOURCE_PATH);
+  const supplier = new Supplier(context, ids);
 
   supplier.supply((chemblID) => {
     const structureURL = `https://www.ebi.ac.uk/chembl/api/data/molecule/${chemblID}?format=json`;
@@ -110,7 +112,7 @@ export function onSupplyRandomWeight(context) {
 export function onSupplyRandomStructure(context) {
   showWaitingMessage();
 
-  const supplier = new Supplier(context, RESOURCE_PATH);
+  const supplier = new Supplier(context, ids);
   const svgToPng = new SVGToPng(document, RESOURCE_PATH, FOLDER);
 
   supplier.supply((chemblID) => {
