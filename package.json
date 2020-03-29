@@ -6,7 +6,7 @@
     "sketch": ">=3.0"
   },
   "skpm": {
-    "name": "chemfill",
+    "name": "ChemFill",
     "manifest": "src/manifest.json",
     "main": "ChemFill.sketchplugin",
     "assets": [

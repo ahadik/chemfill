@@ -1,8 +1,6 @@
 const sketch = require('sketch');
 const UI = require('sketch/ui');
 const util = require('util');
-const fs = require('@skpm/fs');
-const path = require('path');
 
 const { DataSupplier } = sketch;
 
@@ -11,38 +9,44 @@ class Supplier {
     DataSupplier.supplyDataAtIndex(dataKey, data, index);
   }
 
-  constructor(context, resourcePath) {
-    this.supplierStack = [];
-    this.supplierStackCount = 0;
+  constructor(context, ids) {
     this.dataKey = context.data.key;
     this.items = util.toArray(context.data.items).map(sketch.fromNative);
-    const idsFileRaw = fs.readFileSync(path.resolve(path.join(resourcePath, 'chembl-ids.json')));
-    
-    // Extract the IDs from the seed JSON file.
-    const { ids } = JSON.parse(idsFileRaw);
     this.ids = ids;
     this.supply = this.supply.bind(this);
+
+    // We need a counter of how many supply requests haven't yet completed. We
+    // anticipate having one request per item.
+    this.supplierTracker = this.items.length;
+
+    // We also need a count of how many supply requests there were in total (1 per item).
+    this.supplierStackCount = this.items.length;
+
+    // We'll allocate a place to store an error message should one arise.
+    this.errorMessage;
+
+    // We need a success message to send once all the requests are done.
+    this.successMessage = `Synthesized ${this.supplierStackCount} ${this.supplierStackCount === 1 ? 'compound' : 'compounds'} for you!`;
   }
 
   supply(worker) {
     this.items.forEach((item, index) => {
       const randomID = this.ids[Math.floor(Math.random() * this.ids.length)];
-      this.supplierStack.push(randomID);
-      this.supplierStackCount++;
 
       worker(randomID).then((data) => {
         Supplier.supplyData(this.dataKey, data, index);
-        this.supplierStack.pop();
-        if (this.supplierStack.length === 0) {
-          UI.message(`Synthesized ${this.supplierStackCount} ${this.supplierStackCount === 1 ? 'compound' : 'compounds'} for you!`)
+        this.supplierTracker--;
+        if (this.supplierTracker === 0) {
+          UI.message(this.errorMessage || this.successMessage);
         }
       })
-      .catch((errorObj) => {
-        Supplier.supplyData(this.dataKey, errorObj.data, index);
-        this.supplierStack.pop();
-        if (this.supplierStack.length === 0) {
-          console.error(errorObj.error);
-          UI.message(errorObj.error);
+      .catch(({ data, error }) => {
+        Supplier.supplyData(this.dataKey, data, index);
+        this.supplierTracker--;
+        this.errorMessage = error;
+        console.error(error);
+        if (this.supplierTracker === 0) {
+          UI.message(this.errorMessage || this.successMessage);
         }
       });
     });

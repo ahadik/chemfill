@@ -42,18 +42,13 @@ class SVGToPNG {
   saveSVGLayer(svgLayer) {
   
     try {
-      fs.mkdirSync(this.temp_dir);
-    } catch (err) {
-      // meh
-    }
-  
-    try {
       sketch.export(svgLayer, {
         formats: 'png',
+        scales: "3",
         output: this.temp_dir
       });
       svgLayer.removeFromParent();
-      return(path.join(this.temp_dir,`${svgLayer.name()}.png`));
+      return(path.join(this.temp_dir,`${svgLayer.name()}@3x.png`));
     } catch (err) {
       console.error(err);
     }
