@@ -1,7 +1,6 @@
 {
   "name": "ChemFill",
   "identifier": "chemfill",
-  "version": "1.1.0",
   "compatibleVersion": 3,
   "bundleVersion": 1,
   "suppliesData": true,
